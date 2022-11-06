@@ -1,6 +1,6 @@
 <?php
 
-define('ERR_CONECTION',	1001);
+define('ERR_CONNECTION',	1001);
 define('ERR_READ',		1002);
 define('ERR_PARSE',		1003);
 define('ERR_DISCOVERY',	1004);
