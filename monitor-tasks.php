@@ -1,6 +1,7 @@
 <?php
 
 require_once('DownloadStationAPI.php');
+require_once('Params.php');
 
 
 
@@ -44,54 +45,26 @@ function sortTasks($a, $b) {
 	}
 }
 
-function parseCommandLine($inArgs, $config) {
-
-	$args = array();
-	foreach ($inArgs as $a) {
-		if (strpos($a, '--') === 0 && substr_count($a, '=') === 1) {
-			$tmpArgs = explode('=', $a);
-			array_push($args, $tmpArgs[0], $tmpArgs[1]);
-		} else {
-			array_push($args, $a);
-		}
-	}
-
-	$argCount = count($inArgs);
-	for ($i = 1; $i < $argCount; $i++) {
-		switch ($inArgs[$i]) {
-		case '-u':
-		case '--user':
-			if(++$i < $argCount) $config['USER'] = $args[$i];
-			break;
-		case '-p':
-		case '--password':
-			if(++$i < $argCount) $config['PASSWORD'] = $args[$i];
-            break;
-        case '-d':
-        case '--dsmuri':
-            if(++$i < $argCount) $config['DSMURI'] = $args[$i];
-            break;
-		case '-m':
-		case '--max-downloads':
-            if(++$i < $argCount) $config['MAXDOWNLOADS'] = $args[$i];
-            break;
-		case '-c':
-		case '--cmd':
-            if(++$i < $argCount) $config['CMD'] = $args[$i];
-            break;
-        default:
-			// ERROR
-            break;
-        }
-    }
-    return $config;
-}
-
 $config = array(
 	'DSMURI'		=> 'http://localhost:5000/webapi/',
 );
 
-$config = parseCommandLine($argv, $config);
+$params = array(
+	'-u'				=> 'USER',
+	'--user'			=> 'USER',
+	'-p'				=> 'PASSWORD',
+	'--password'		=> 'PASSWORD',
+	'-d'				=> 'DSMURI',
+	'--dsm-uri'			=> 'DSMURI',
+	'-m'				=> 'MAXDOWNLOADS',
+	'--max-downloads'	=> 'MAXDOWNLOADS',
+	'-c'				=> 'CMD',
+	'--cmd'				=> 'CMD',
+);
+
+$config = parseEnvParams($config, 'AUTODL_');
+
+$config = parseCommandLine($argv, $config, $params);
 
 $api = new DownloadStationAPI($config['USER'], $config['PASSWORD'], $config['DSMURI']);
 $res = $api->getTaskList();
