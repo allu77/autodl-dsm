@@ -19,6 +19,8 @@ class DownloadStationAPI {
 
 	protected $apiEndpoints = array();
 
+	protected $verbose = false;
+
 	public $error = null;
 
 	public function __construct($user, $password, $dsmUri) {
@@ -31,7 +33,7 @@ class DownloadStationAPI {
 	}
 
 	protected function log($msg) {
-		echo("$msg\n");
+		if ($verbose) echo("$msg\n");
 	}
 
 	protected function setError($errNo) {
